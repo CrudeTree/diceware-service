@@ -1,13 +1,16 @@
 package edu.cnm.deepdive.dicewareservice.model.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,7 +22,7 @@ public class Passphrase {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "passphrase_id", updatable = false, nullable = false)
-  private long id;
+  private Long id;
 
   @NonNull
   @CreationTimestamp
@@ -28,13 +31,14 @@ public class Passphrase {
   private Date created;
 
   @NonNull
-  @Column(nullable = false, length = 20, unique = true)
+  @Column(name = "passkey", nullable = false, length = 20, unique = true)
   private String key;
 
-  @OneToMany(mappedBy = "passphrase")
-  private List<Word> words;
+  @OneToMany(mappedBy = "passphrase", cascade = CascadeType.PERSIST)
+  @OrderBy("word_id ASC")
+  private List<Word> words = new ArrayList<>();
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
@@ -48,6 +52,10 @@ public class Passphrase {
 
   public void setKey(String key) {
     this.key = key;
+  }
+
+  public List<Word> getWords() {
+    return words;
   }
 
 }
